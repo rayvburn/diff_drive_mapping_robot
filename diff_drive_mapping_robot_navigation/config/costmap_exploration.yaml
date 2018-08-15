@@ -1,0 +1,15 @@
+global_frame: "map"
+rolling_window: false           # because of static map
+track_unknown_space: true
+
+transform_tolerance: 2.0       # def 0.5
+
+explore_boundary:
+  resize_to_boundary: false
+  frontier_travel_point: middle
+  explore_clear_space: true     # set to false for gmapping, true if re-exploring a known area
+
+plugins: 
+  - {name: external_map,         type: "costmap_2d::StaticLayer"}
+  - {name: explore_boundary,    type: "frontier_exploration::BoundedExploreLayer"}
+  - {name: inflation,           type: "costmap_2d::InflationLayer"}

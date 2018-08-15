@@ -1,0 +1,22 @@
+global_costmap:
+
+  plugins: 
+    - {name: static_layer, type: "costmap_2d::StaticLayer"}
+    - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
+
+  # ---- Coordinate frame and tf
+  global_frame: "map"
+  robot_base_frame: "base_link"
+  transform_tolerance: 2.0        # def 0.5
+
+  # ---- Rate
+  update_frequency:  1.0           # 1.0
+  publish_frequency: 1.5           # 0.5
+
+  # ---- Map management
+  rolling_window: false            # can't be true if static_map is used
+  always_send_full_costmap: true
+  static_map: true
+  map_type: costmap
+
+

@@ -1,0 +1,22 @@
+<launch>
+
+    <node name="controller" pkg="pid" type="controller" ns="/robot/wheel_right" output="screen" >
+
+          <rosparam file="$(find diff_drive_mapping_robot_controller)/config/controller_params.yaml"
+                    command="load"/>
+                    <param name="topic_from_controller" value="/robot/wheel_right/cmd_vel/closed_loop"/>
+                    <param name="topic_from_plant" value="/robot/wheel_right/velocity/angular"/>
+                    <param name="setpoint_topic" value="/robot/wheel_right/cmd_vel/open_loop"/>
+    </node>
+
+    <node name="controller" pkg="pid" type="controller" ns="/robot/wheel_left" output="screen" >
+
+          <rosparam file="$(find diff_drive_mapping_robot_controller)/config/controller_params.yaml"
+                    command="load"/>
+                    <param name="topic_from_controller" value="/robot/wheel_left/cmd_vel/closed_loop"/>
+                    <param name="topic_from_plant" value="/robot/wheel_left/velocity/angular"/>
+                    <param name="setpoint_topic" value="/robot/wheel_left/cmd_vel/open_loop"/>
+    </node>
+
+</launch>
+

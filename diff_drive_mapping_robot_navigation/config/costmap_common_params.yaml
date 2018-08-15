@@ -1,0 +1,10 @@
+# robot's not circular
+footprint: [[0.09, -0.075], [0.09, +0.075], [-0.16, +0.075], [-0.16, -0.075]] 
+footprint_padding: 0.05
+
+inflation_layer:
+  # max. distance from an obstacle at which costs are incurred for planning paths.
+  inflation_radius: 0.25
+  # exponential rate at which the obstacle cost drops off (default 10)
+  cost_scaling_factor: 10 # was 5  
+

@@ -1,0 +1,22 @@
+local_costmap:
+
+  plugins: 
+#    - {name: obstacle_layer, type: "costmap_2d::VoxelLayer"}
+    - {name: sonar, type: "range_sensor_layer::RangeSensorLayer"}
+    - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
+
+  # ---- Coordinate frame and tf
+  global_frame: "map" # "odom" # "map" #  # should be the same as global frame in base local planner!
+  robot_base_frame: "base_link"
+  transform_tolerance: 1.5 # when too high, in case of tracking lost, there is danger that robot will go ahead blindly (won't stop publishing cmd_vel) // def 0.5 # increase if "Unable to get starting pose of robot..."
+
+  # ---- Rate
+  update_frequency:  1.5  # 5.0
+  publish_frequency: 1.5  # 2.0
+
+  # ---- Map management
+  rolling_window: true
+  always_send_full_costmap: false
+  static_map: false
+  map_type: costmap
+

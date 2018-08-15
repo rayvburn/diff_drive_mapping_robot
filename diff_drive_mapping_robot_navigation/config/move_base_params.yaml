@@ -1,0 +1,72 @@
+# ============ Move base node parameters =======
+# == http://wiki.ros.org/move_base#Parameters ==
+
+# global planner - http://wiki.ros.org/nav_core#BaseGlobalPlanner
+base_global_planner: "navfn/NavfnROS"
+
+# local planner - http://wiki.ros.org/nav_core#BaseLocalPlanner
+base_local_planner: "dwa_local_planner/DWAPlannerROS"
+
+# A list of recovery behavior plugins to use with move_base
+recovery_behaviors: 
+     - {name: conservative_reset, type: clear_costmap_recovery/ClearCostmapRecovery}
+     - {name: rotate_recovery,    type: rotate_recovery/RotateRecovery }
+#     - {name: move_slow,          type: move_slow_and_clear/MoveSlowAndClear }
+
+# cntr_frq = The rate in Hz at which to run the control loop and send velocity
+# commands to the base. controller_frequency: 10.0    # 5.0 ## SEEMS NOT TO 
+# WORK FROM THIS FILE (LOCAL PLANNER ALSO HAS THIS)
+controller_frequency: 10.0
+
+# How long the planner will wait in seconds in an attempt to find a
+# valid plan before space-clearing operations are performed.
+planner_patience: 8.0
+
+# How long the controller will wait in seconds without receiving a
+# valid control before space-clearing operations are performed.
+controller_patience: 10.0 # def 3, was 15.0
+
+# The distance away from the robot in meters at which obstacles will 
+# be cleared from the costmap when attempting to clear space in the map
+# Works only with default recovery behavior.
+conservative_reset_dist: 0.5
+
+# Enables the move_base recovery behaviors to attempt to clear out space.
+recovery_behavior_enabled: true
+
+# Robot will attempt an in-place rotation when attempting to clear out 
+# space. Works only with default recovery behavior.
+clearing_rotation_allowed: true
+
+# Determines whether or not to shutdown the costmaps of the node when
+# move_base is in an inactive state
+shutdown_costmaps: false
+
+# How long in seconds to allow for oscillation before executing
+# recovery behaviors. A value of 0.0 corresponds to an infinite timeout.
+oscillation_timeout: 10.0 # 30.0 # 10.0
+
+# How far in meters the robot must move to be considered not to be
+# oscillating. Moving this far resets the timer counting up to the
+# ~oscillation_timeout # oscillation_distance: 0.2
+oscillation_distance: 0.05
+
+# The rate in Hz at which to run the global planning loop. If the
+# frequency is set to 0.0, the global planner will only run when a new
+# goal is received or the local planner reports that its path is
+# blocked.
+planner_frequency: 0.0
+
+# How many times to allow for planning retries before executing recovery # behaviors. -1 corresponds to an infinite retries.
+max_planning_retries: 100
+
+# recovery_behaviors parameters
+conservative_reset:
+  reset_distance: 0.5   # The radius away from the robot in meters outside which obstacles will be removed from the costmaps
+  layer_names: sonar
+rotate_recovery:
+  sim_granularity: 0.02 # The distance in radians between checks for obstacles when checking if an in-place rotation is safe
+move_slow:
+  limited_trans_speed: 0.02
+  limited_rot_speed: 0.15
+  limited_distance: 0.25

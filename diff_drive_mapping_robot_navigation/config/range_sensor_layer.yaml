@@ -1,0 +1,18 @@
+#sonar:
+  # Namespace that is prepended to all topic names 
+  ns: "/robot/range"
+
+  # List of Range topics to subscribe to 
+  topics: ['/sonar/filtered/left', '/sonar/filtered/front', '/sonar/filtered/right', '/ir/right', '/ir/left']
+
+  # If zero, this parameter has no effect. Otherwise if the layer does not    receive sensor data for this amount of time, the layer will warn the user and   the layer will be marked as not current. 
+  no_readings_timeout: 30.0 # [/move_base]:Sensor data is out of date, we're not going to allow commanding of the base for safety ?
+
+  # Cells with a probability lower than the clear_threshold are marked as free space in the master costmap. 
+  clear_threshold: 0.30
+    
+  # Cells with a probability higher than the mark_threshold are marked as lethal obstacles in the master costmap. 
+  mark_threshold: 0.70
+    
+  # Whether to clear the sensor readings on max. range
+  clear_on_max_reading: true

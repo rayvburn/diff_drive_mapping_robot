@@ -1,0 +1,50 @@
+<launch>
+
+    <arg name="cmd_vel_topic" default="mobile_base_controller/cmd_vel"/>
+    <arg name="odom_topic" default="odom" /> 
+
+    <node pkg="move_base" type="move_base" name="move_base" respawn="false" output="screen">
+
+         <!-- common (global & local) parameters -->
+         <rosparam file="$(find diff_drive_mapping_robot_navigation)/config/costmap_common_params.yaml"
+                    command="load"
+                    ns="global_costmap"/>
+
+          <rosparam file="$(find diff_drive_mapping_robot_navigation)/config/costmap_common_params.yaml"
+                    command="load"
+                    ns="local_costmap"/>
+
+          <!-- local costmap parameters -->
+          <rosparam file="$(find diff_drive_mapping_robot_navigation)/config/costmap_local_params.yaml"
+                    command="load"/>
+          
+          <rosparam file="$(find diff_drive_mapping_robot_navigation)/config/range_sensor_layer.yaml"
+                    command="load"
+                    ns="local_costmap/sonar" />
+
+          <!-- global costmap parameters -->          
+          <rosparam file="$(find diff_drive_mapping_robot_navigation)/config/costmap_global_params.yaml"
+                    command="load"/>
+
+          <rosparam file="$(find diff_drive_mapping_robot_navigation)/config/static_map_params.yaml"
+                    command="load"
+                    ns="global_costmap/static_layer" />
+
+          <!-- planner parameters -->
+          <rosparam file="$(find diff_drive_mapping_robot_navigation)/config/planner_params.yaml"
+                    command="load"/>
+
+          <rosparam file="$(find diff_drive_mapping_robot_navigation)/config/move_base_params.yaml"
+                    command="load"/>
+
+          <remap from="cmd_vel" 
+                 to="$(arg cmd_vel_topic)"/>
+
+          <remap from="odom" 
+                 to="$(arg odom_topic)"/>
+
+    </node>
+
+    <node pkg="diff_drive_mapping_robot_navigation" type="move_base_limiter" name="move_base_limiter" respawn="false" output="screen"> </node>
+
+</launch>

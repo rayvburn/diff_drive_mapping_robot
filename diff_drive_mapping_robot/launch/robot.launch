@@ -1,0 +1,79 @@
+<launch>
+  
+  <!-- ================= LOCAL PROCESSES GROUP - PC - MASTER =============== -->
+  <group>
+      <machine name="laptop" address="$(optenv ROS_HOSTNAME jarek-Lenovo-Z580.lan)" env-loader="/opt/ros/kinetic/env.sh" user="jarek" />
+
+      <!-- =================   ROBOT MODEL DEFINITION   ==================== -->
+
+      <arg name="model"      default="$(find diff_drive_mapping_robot)/urdf/diff_drive_robot.urdf"/>
+      <arg name="gui"        default="true" />
+      <arg name="rvizconfig" default="$(find diff_drive_mapping_robot)/urdf/slam_navi_settings.rviz" />
+
+      <param name="robot_description" command="$(find xacro)/xacro --inorder $(arg model)" />
+      <param name="use_gui"           value="$(arg gui)"/>
+
+      <!-- ====================    PARAMETERS   ============================ -->
+  
+      <rosparam command="load" file="$(find diff_drive_mapping_robot)/config/controller_common.yaml" />
+      <rosparam command="load" file="$(find diff_drive_mapping_robot)/config/control.yaml" />
+
+      <!-- ==================     VISUALISATION     ======================== -->
+  
+      <!-- <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" /> -->
+      <!-- <node name="rqt_image_view"        pkg="rqt_image_view"        type="rqt_image_view"    args="_image_transport:=compressed" /> -->
+      <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+      <node name="rviz"                  pkg="rviz"                  type="rviz" args="-d $(arg rvizconfig)" required="true" /> 
+      <node name="rqt_robot_steering" 	 pkg="rqt_robot_steering"    type="rqt_robot_steering" />
+
+      <!-- =====================     NODES     ============================= -->
+
+      <node name="tf_broadcaster"           pkg="diff_drive_mapping_robot" type="tf_broadcaster" output="screen" />
+      <node name="republish"                pkg="image_transport"          type="republish"      args="compressed in:=/raspicam_node/image raw out:=/raspicam_node/image/raw" />
+      <node pkg="diff_drive_mapping_robot" type="sonar_filter_node" name="sonar_filter_node" output="screen"/>
+
+      <!-- -->
+      <!-- if you don't have any network speed issues then you can run these on the PC machine -->
+      <!--
+      <node name="controller_spawner"       pkg="controller_manager"       type="spawner"        output="screen"  args="mobile_base_controller"/>
+      <node name="controller_manager_node"  pkg="diff_drive_mapping_robot" type="controller_manager_node" output="screen" />
+      <include file="$(find diff_drive_mapping_robot_controller)/launch/velocity_controller.launch" />  
+      -->
+      <!-- -->
+
+  </group>
+
+
+  <!-- ================== REMOTE PROCESSES GROUP - Raspberry Pi 3 - SLAVE ===================================== -->
+
+  <group> 
+      <machine name="rpi" address="ubiquityrobot.local" env-loader="/home/ubuntu/catkin_ws/remote_env.sh" user="ubuntu" default="true" timeout="15"  />
+
+      <!-- <node name="tf_broadcaster"           pkg="diff_drive_mapping_robot" type="tf_broadcaster" output="screen" /> -->    
+      <node name="controller_spawner"        pkg="controller_manager"         type="spawner"                 output="screen"  args="mobile_base_controller"/>
+      <node name="controller_manager_node"   pkg="diff_drive_mapping_robot"   type="controller_manager_node" output="screen" />
+      <node name="measurer_range"            pkg="diff_drive_mapping_robot"   type="measurer_range"  />
+      <node name="encoder_counter"           pkg="diff_drive_mapping_robot"   type="encoder_counter" />  
+      <node name="motor_commands_node"       pkg="diff_drive_mapping_robot"   type="motor_commands_node"     output="screen" />  
+      <node name="rgb_led_manager"     	     pkg="diff_drive_mapping_robot"   type="rgb_led_manager" />  
+      <node name="battery_state_broadcaster" pkg="diff_drive_mapping_robot"   type="battery_state_broadcaster" /> 
+      <include file="$(find diff_drive_mapping_robot_controller)/launch/velocity_controller.launch" />
+
+      <!-- ================ raspicam_node by UbiquityRobotics ================================ -->     
+      <!-- ============ .launch files with calibrated Raspberry Pi camera v1.3 parameters ============= -->
+      <!-- <include file="$(find raspicam_node)/launch/my_launches/camerav1_3_640x480_90fps.launch" />  -->
+      <include file="$(find raspicam_node)/launch/my_launches/camerav1_3_800x600_90fps.launch" />
+      <!-- <include file="$(find raspicam_node)/launch/my_launches/camerav1_3_1280x960_90fps.launch" /> -->
+
+      <!-- ========= .launch files with calibrated Raspberry Pi wide angle camera parameters ========== -->
+      <!-- <include file="$(find raspicam_node)/launch/my_launches/camera_wide_800x600_90fps.launch" /> -->
+      <!-- <include file="$(find raspicam_node)/launch/my_launches/camera_wide_800x600_slam.launch"  /> -->
+
+      <!-- you can increase the quality value if you don't have any network speed issues -->
+      <param name="/raspicam_node/quality" value="6"/>  
+      
+            
+  </group> 
+
+
+</launch>

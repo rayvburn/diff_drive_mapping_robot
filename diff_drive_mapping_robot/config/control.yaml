@@ -1,0 +1,17 @@
+# .yaml config file
+robot:
+  motor_commands:
+    pwm_update_frequency: 50.0
+    cmd_vel_topic:
+      left:  "/robot/wheel_left/cmd_vel/closed_loop"
+      right: "/robot/wheel_right/cmd_vel/closed_loop"
+  controller_manager:
+    control_frequency: 50.0
+  range:
+    max_distance: 1.20   # in meters
+    publish_rate: 3.00   # in Hz
+  rgb_manager:
+    loop_close_topic:   "/orb_slam2/info/loop_closed"
+    slam_state_topic:   "/orb_slam2/info/state_description"
+    intensity_factor:   0.12
+    blinking_frequency: 1.50

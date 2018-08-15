@@ -1,0 +1,13 @@
+<launch>
+
+    <arg name="map_file_to_save" default="$(find diff_drive_mapping_robot_navigation)/map/ddmr_map"/>
+    <arg name="map_topic" default="/orb_slam2/projected_morpho_map" /> 
+
+    <node name="map_saver" pkg="map_server" type="map_saver" args="-f $(arg map_file_to_save)" >
+          <remap from="map" 
+                 to="$(arg map_topic)"/>
+    </node>
+
+    <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file_to_save)" />
+
+</launch>
